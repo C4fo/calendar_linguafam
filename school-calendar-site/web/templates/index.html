@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🏫 Школьный календарь</h1>
+            <p>Интерфейс для переноса уроков</p>
+        </header>
+        
+        <main class="main-content">
+            <div class="card">
+                <h2>🚀 Быстрый старт</h2>
+                <p>Это демо-интерфейс для разработчика бота.</p>
+                <p>Все кнопки работают, но данные - заглушки.</p>
+                
+                <div class="buttons">
+                    <a href="/calendar?role=parent&student_id=1" class="btn btn-primary">
+                        👪 Открыть календарь родителя
+                    </a>
+                    <a href="/calendar?role=teacher&id=1" class="btn btn-secondary">
+                        👨‍🏫 Открыть календарь учителя
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>📋 Что тут есть:</h2>
+                <ul class="feature-list">
+                    <li>✅ Интерактивный календарь (FullCalendar)</li>
+                    <li>✅ Три типа переноса уроков</li>
+                    <li>✅ Диалог выбора даты и времени</li>
+                    <li>✅ Визуализация занятости</li>
+                    <li>✅ API заглушки для интеграции</li>
+                    <li>✅ Адаптивный дизайн</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2>🔧 Для разработчика:</h2>
+                <p><strong>API Endpoints (заменить на свои):</strong></p>
+                <code>
+                    GET  /api/lessons/upcoming<br>
+                    GET  /api/availability/weekly<br>
+                    POST /api/lessons/{id}/reschedule
+                </code>
+                <p style="margin-top: 15px;"><strong>Документация API:</strong></p>
+                <a href="/docs" class="btn btn-small">📚 Swagger UI</a>
+                <a href="/redoc" class="btn btn-small">📖 ReDoc</a>
+            </div>
+        </main>
+        
+        <footer class="footer">
+            <p>© 2024 Школьный календарь | Интерфейс для интеграции с Telegram ботом</p>
+        </footer>
+    </div>
+</body>
+</html>
