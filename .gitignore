@@ -1,0 +1,15 @@
+# База данных SQLite 
+*.db 
+school.db 
+ 
+# IDE/Editor 
+.vscode/ 
+.idea/ 
+ 
+# Временные файлы ОС 
+.DS_Store 
+Thumbs.db 
+ 
+# Python (если остались от старой версии) 
+__pycache__/ 
+*.pyc 

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Календарь преподавателя</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container" id="app">
+        <!-- Загрузочный экран -->
+        <div class="loading-screen" id="loadingScreen">
+            <div class="loader"></div>
+            <p>Загрузка календаря...</p>
+        </div>
+
+        <!-- Основной интерфейс (скрыт до загрузки) -->
+        <div class="main-interface" style="display: none;">
+            <!-- Шапка -->
+            <header class="header">
+                <div class="header-left">
+                    <h1><i class="fas fa-calendar-alt"></i> Календарь преподавателя</h1>
+                    <div class="teacher-info" id="teacherInfo">
+                        <span class="teacher-name">Иван Иванов</span>
+                        <span class="teacher-id">ID: 123</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-primary" id="weekViewBtn">
+                        <i class="fas fa-calendar-week"></i> Недельное расписание
+                    </button>
+                    <button class="btn btn-secondary" id="monthViewBtn">
+                        <i class="fas fa-calendar"></i> Месячный календарь
+                    </button>
+                </div>
+            </header>
+
+            <!-- Основной контент -->
+            <main class="main-content">
+                <!-- Месячный календарь -->
+                <section class="calendar-section" id="monthCalendar">
+                    <div class="calendar-header">
+                        <button class="nav-btn" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                        <h2 id="currentMonth">Январь 2024</h2>
+                        <button class="nav-btn" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    
+                    <div class="calendar-grid">
+                        <!-- Дни недели -->
+                        <div class="day-header">Пн</div>
+                        <div class="day-header">Вт</div>
+                        <div class="day-header">Ср</div>
+                        <div class="day-header">Чт</div>
+                        <div class="day-header">Пт</div>
+                        <div class="day-header">Сб</div>
+                        <div class="day-header">Вс</div>
+                        
+                        <!-- Ячейки дней будут сгенерированы JavaScript -->
+                        <div class="calendar-days" id="calendarDays"></div>
+                    </div>
+                </section>
+
+                <!-- Недельное расписание (скрыто по умолчанию) -->
+                <section class="week-schedule-section" id="weekSchedule" style="display: none;">
+                    <div class="week-header">
+                        <h2><i class="fas fa-clock"></i> Недельное расписание</h2>
+                        <!-- Кнопка добавится через JavaScript -->
+                        <button class="btn btn-success" id="saveAvailabilityBtn">
+                            <i class="fas fa-save"></i> Сохранить расписание
+                        </button>
+                    </div>
+                    
+                    <div class="week-controls">
+                        <button class="btn btn-sm" id="prevWeek"><i class="fas fa-chevron-left"></i> Предыдущая</button>
+                        <span id="currentWeek">Неделя 1-7 января</span>
+                        <button class="btn btn-sm" id="nextWeek">Следующая <i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    
+                    <div class="week-grid" id="weekGrid">
+                        <!-- Заполнится через JavaScript -->
+                    </div>
+                    
+                    <div class="week-legend">
+                        <div class="legend-item">
+                            <span class="color-box free"></span> Свободное окно
+                        </div>
+                        <div class="legend-item">
+                            <span class="color-box regular"></span> Регулярный урок
+                        </div>
+                        <div class="legend-item">
+                            <span class="color-box busy"></span> Занято (урок)
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Боковая панель с деталями дня -->
+                <aside class="sidebar" id="daySidebar">
+                    <div class="sidebar-header">
+                        <h3 id="sidebarDayTitle">Детали дня</h3>
+                        <button class="close-btn" id="closeSidebar">&times;</button>
+                    </div>
+                    
+                    <div class="day-details" id="dayDetails">
+                        <div class="no-lessons" id="noLessonsMessage">
+                            <i class="fas fa-calendar-plus"></i>
+                            <p>На этот день уроков не запланировано</p>
+                            <button class="btn btn-sm btn-outline" id="addLessonBtn">
+                                <i class="fas fa-plus"></i> Добавить урок
+                            </button>
+                        </div>
+                        
+                        <div class="lessons-list" id="lessonsList" style="display: none;"></div>
+                    </div>
+                    
+                    <div class="sidebar-actions">
+                        <button class="btn btn-warning" id="rescheduleDayBtn">
+                            <i class="fas fa-exchange-alt"></i> Перенести день
+                        </button>
+                        <button class="btn btn-danger" id="cancelDayBtn">
+                            <i class="fas fa-ban"></i> Отменить все уроки
+                        </button>
+                    </div>
+                </aside>
+            </main>
+        </div>
+
+        <!-- Модальные окна -->
+        <div class="modal" id="lessonModal">
+            <div class="modal-content">
+                <h3>Добавить урок</h3>
+                <form id="lessonForm">
+                    <div class="form-group">
+                        <label for="lessonTime">Время:</label>
+                        <input type="time" id="lessonTime" required>
+                    </div>
+                   <div class="form-group">
+    <label for="lessonDuration">Продолжительность:</label>
+    <div class="duration-display">
+        40 минут (фиксированно)
+    </div>
+    <input type="hidden" id="lessonDuration" value="40">
+</div>
+                    <div class="form-group">
+                        <label for="lessonStudent">Ученик:</label>
+                        <input type="text" id="lessonStudent" placeholder="Имя ученика" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lessonTopic">Тема:</label>
+                        <input type="text" id="lessonTopic" placeholder="Тема урока">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelLessonBtn">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Модальное окно для регулярного урока -->
+<div class="modal" id="regularLessonModal">
+    <div class="modal-content">
+        <h3><i class="fas fa-calendar-week"></i> Добавить регулярный урок</h3>
+        <form id="regularLessonForm">
+            <div class="form-group">
+                <label for="regularDay">День недели:</label>
+                <select id="regularDay" required>
+                    <option value="">Выберите день</option>
+                    <option value="1">Понедельник</option>
+                    <option value="2">Вторник</option>
+                    <option value="3">Среда</option>
+                    <option value="4">Четверг</option>
+                    <option value="5">Пятница</option>
+                    <option value="6">Суббота</option>
+                    <option value="0">Воскресенье</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="regularTime">Время начала:</label>
+                <select id="regularTime" required>
+                    <option value="">Выберите время</option>
+                    <!-- Время с 9:00 до 20:00 с шагом 30 минут -->
+                    <option value="09:00">09:00</option>
+                    <option value="09:30">09:30</option>
+                    <option value="10:00">10:00</option>
+                    <option value="10:30">10:30</option>
+                    <option value="11:00">11:00</option>
+                    <option value="11:30">11:30</option>
+                    <option value="12:00">12:00</option>
+                    <option value="12:30">12:30</option>
+                    <option value="13:00">13:00</option>
+                    <option value="13:30">13:30</option>
+                    <option value="14:00">14:00</option>
+                    <option value="14:30">14:30</option>
+                    <option value="15:00">15:00</option>
+                    <option value="15:30">15:30</option>
+                    <option value="16:00">16:00</option>
+                    <option value="16:30">16:30</option>
+                    <option value="17:00">17:00</option>
+                    <option value="17:30">17:30</option>
+                    <option value="18:00">18:00</option>
+                    <option value="18:30">18:30</option>
+                    <option value="19:00">19:00</option>
+                    <option value="19:30">19:30</option>
+                    <option value="20:00">20:00</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="regularDuration">Продолжительность:</label>
+                <select id="regularDuration">
+                    <option value="40">40 минут</option>
+                    <option value="60">60 минут</option>
+                    <option value="90">90 минут</option>
+                    <option value="120">120 минут</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="regularTitle">Название/описание (необязательно):</label>
+                <input type="text" id="regularTitle" placeholder="Например: Английский с группой A">
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" id="cancelRegularLessonBtn">Отмена</button>
+                <button type="submit" class="btn btn-primary">Добавить урок</button>
+            </div>
+        </form>
+    </div>
+</div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/dataService.js"></script>
+    <script src="js/calendar.js"></script>
+    <script src="js/weekSchedule.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
